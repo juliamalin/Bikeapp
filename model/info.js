@@ -15,9 +15,9 @@ const journeySchema = new mongoose.Schema({
     departure: Date,
     return: Date,
     departure_stationID: Number,
-    departure_stationName: String,
+    "Departure station name": String,
     return_stationID: Number,
-    return_stationName: String,
+    "Return station name": String,
     distance: {
         type: Number,
         min: 10
@@ -28,5 +28,11 @@ const journeySchema = new mongoose.Schema({
     }
 })
 
+journeySchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+    }
+})
 
 module.exports = mongoose.model('Journey', journeySchema,'journeys')

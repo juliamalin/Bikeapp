@@ -9,10 +9,11 @@ var csv = require('csvtojson');
 require('dotenv').config()
 
 var upload = multer({ dest: 'uploads/' });
+app.use(cors())
+app.use(express.json())
 
 const journeyModel = require('./model/info')
 
-app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -31,7 +32,9 @@ app.get('/api/journeys', (req, res) => {
           .skip((page - 1) * limit)
           .limit(limit)
           .then((items) => {
-            res.json({ items, totalPages, currentPage: page });
+            const uniqueDepartureStations = [...new Set(items.map((journey) => journey["Departure station name"]))];
+            const uniqueReturnStations = [...new Set(items.map((journey) => journey["Return station name"]))];
+            res.json({ items, totalPages, currentPage: page, uniqueDepartureStations, uniqueReturnStations });
           })
           .catch((err) => {
             console.log(err);
