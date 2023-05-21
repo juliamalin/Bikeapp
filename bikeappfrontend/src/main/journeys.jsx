@@ -4,10 +4,10 @@ import journeyService from '../services/journeygetters'
 
 
 const ShowJourneys = ({journeys}) => {
-    console.log(journeys)
+   /*console.log(journeys)
     if (!journeys) {
       return null
-    }
+    }*/
   
     const renderHeaders = () => (
       <div className="journey">
@@ -71,20 +71,27 @@ const ShowJourneys = ({journeys}) => {
     const [searchTextDeparture, setSearchTextDeparture] = React.useState('')
     const [searchTextReturn, setSearchTextReturn] = React.useState('')
     const [durationRange, setDurationRange] = React.useState('all')
-  
-    useEffect(()=> {
-      journeyService
-      .getAll()
-      .then(initialJourney => {
-        setJourneys(initialJourney.items)
-        console.log(initialJourney)
-      })
-      .catch(error => {
-        console.error('Error fetching journeys:', error)
-      })
-      }, [])
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+      const fetchJourneys = async (page) => {
+        try {
+          const response = await journeyService.getAll(page);
+          const { items, totalPages, currentPage } = response;
+          setJourneys(items);
+          setTotalPages(totalPages);
+          setCurrentPage(currentPage);
+        } catch (error) {
+          console.error('Error fetching journeys:', error);
+        }
+      };
+    
+      fetchJourneys(currentPage);
+    }, [currentPage]);
 
     console.log(allJourneys)
+
 
     //filteröi matkat tekstihaun perusteella
     let filteredJourneys = [...allJourneys];
@@ -132,11 +139,24 @@ const ShowJourneys = ({journeys}) => {
   })
 
 
+
+  const goToPreviousPage = () => {
+    setCurrentPage((prevPage) => {
+      if (prevPage > 1) {
+        return prevPage - 1;
+      }
+      return prevPage;
+    });
+  };
   
+  const goToNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+
     return(
     <div>
         <h2>Kaikki matkat</h2>
-        <h3>Palauttaa serveriin parametrina asetetun sivun matkat (40 kpl per sivu)</h3>
         <input placeholder="Hae lähtöasema" onChange={ev => setSearchTextDeparture(ev.target.value)}></input>
         <input placeholder="Hae saapumisasema" onChange={ev => setSearchTextReturn(ev.target.value)}></input>
         <select className="" aria-label="Default select example" onChange={ev => setDurationRange(ev.target.value)}>
@@ -145,7 +165,14 @@ const ShowJourneys = ({journeys}) => {
                         <option value="medium">5-10 min</option>
                         <option value="long">+10 min</option>
                     </select>
-        <ShowJourneys journeys = {filteredJourneys} />  
+        <ShowJourneys journeys = {filteredJourneys} />
+        <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+          Previous Page
+        </button>
+        <button onClick={goToNextPage} disabled={currentPage === totalPages}>
+          Next Page
+        </button>
+        <span>Page {currentPage} of {totalPages}</span>
     </div>
     )
   }

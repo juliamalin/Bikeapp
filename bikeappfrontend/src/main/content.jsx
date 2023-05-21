@@ -17,7 +17,15 @@ export function Navbar() {
 export function Main() {
   
     return <main>
+      <h1>Helsinki city bike app (Dev Academyn ennakkotehtävä)</h1>
+      <h3>Yläreunasta löytyy valikko jonka kautta pääsee matka- ja asemalistauksiin</h3>
+      <p>
+      <Link to="/journeys" className="link">Matkat</Link>
+      <br />
+      <Link to="/station" className="link">Asemat</Link>
+      </p>
       <Routes>
+        <Route path="/" element={null} />
         <Route path="/journeys" element={<Journeys />} />
         <Route path="/station" element={<Stations />} />
       </Routes>

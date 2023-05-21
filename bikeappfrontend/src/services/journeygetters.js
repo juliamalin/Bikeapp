@@ -1,8 +1,12 @@
 import axios from 'axios'
 
-const getAll = () => {
-  const request = axios.get('http://localhost:3001/api/journeys')
-  return request.then(response => response.data)
+const getAll = (page) => {
+  const request = axios.get(`http://localhost:3001/api/journeys?page=${page}`);
+  return request.then(response => ({
+    items: response.data.items,
+    totalPages: response.data.totalPages,
+    currentPage: response.data.currentPage
+  }));
 }
 
 const getStationinfo= () => {
