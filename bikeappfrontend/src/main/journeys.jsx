@@ -84,6 +84,7 @@ const ShowJourneys = ({journeys}) => {
     return(
     <div>
         <h2>Kaikki matkat</h2>
+        <h3>Palauttaa serveriin paramterina asetetun sivun matkat (20 kpl)</h3>
         <ShowJourneys journeys = {journeys} />  
     </div>
     )

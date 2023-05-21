@@ -19,7 +19,7 @@ app.use(express.static('build'))
 
 
 app.get('/api/journeys', (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
+    const page = parseInt(3) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
     const limit = 20; // Number of documents to display per page
   
     journeyModel.countDocuments({}) // Get the total count of documents
@@ -54,6 +54,71 @@ app.get('/api/journeys', (req, res) => {
       })
       .on('end', () => {
         res.json(results);
+      });
+  });
+
+  //hakee jokaiselle asemalla sieltä lähtien matkojen lukumäärän ja keskipituuden, top5 paluuasemat
+  app.get('/api/journeys/count', (req, res) => {
+    journeyModel.aggregate([
+      {
+        $group: {
+          _id: '$Departure station name',
+          count: { $sum: 1 },
+          averageDistance: { $avg: '$Covered distance (m)' },
+          topReturnStations: { $push: '$Return station name' }
+        }
+      },
+
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          averageDistance: 1,
+          topReturnStations: {
+            $slice: ['$topReturnStations', 5]
+          }
+        }
+      }
+    ])
+      .then((counts) => {
+        const countsLength = counts.length;
+        res.json({ counts, countsLength });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: 'An error occurred while counting journeys' });
+      });
+  });
+
+    //hakee jokaiselle asemalla sinne saapuvien matkojen lukumäärän ja keskipituuden, top5 lähtöasemat
+  app.get('/api/journeys/count/returnstation', (req, res) => {
+    journeyModel.aggregate([
+      {
+        $group: {
+          _id: '$Return station name',
+          count: { $sum: 1 },
+          averageDistance: { $avg: '$Covered distance (m)' },
+          topDepartureStations: { $push: '$Departure station name' }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          averageDistance: 1,
+          topDepartureStations: {
+            $slice: ['$topDepartureStations', 5]
+          }
+        }
+      }
+    ])
+      .then((counts) => {
+        const countsLength = counts.length;
+        res.json({ counts, countsLength });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: 'An error occurred while counting journeys' });
       });
   });
   
