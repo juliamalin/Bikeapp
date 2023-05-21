@@ -68,10 +68,9 @@ const ShowJourneys = ({journeys}) => {
   
   export const Journeys = () => {
     const [allJourneys, setJourneys] = useState([])
-
-    const [sortBy, setSortBy] = React.useState('all')
     const [searchTextDeparture, setSearchTextDeparture] = React.useState('')
     const [searchTextReturn, setSearchTextReturn] = React.useState('')
+    const [durationRange, setDurationRange] = React.useState('all')
   
     useEffect(()=> {
       journeyService
@@ -87,32 +86,50 @@ const ShowJourneys = ({journeys}) => {
 
     console.log(allJourneys)
 
-    //filter journeys based on search results
+    //filteröi matkat tekstihaun perusteella
     let filteredJourneys = [...allJourneys];
 
     if (searchTextDeparture) {
-      const lowercaseSearchText = searchTextDeparture.toLowerCase(); // Convert search text to lowercase
+      const lowercaseSearchText = searchTextDeparture.toLowerCase()
       filteredJourneys = filteredJourneys.filter(journey => {
-        const departureStationName = journey["Departure station name"].toLowerCase(); // Convert departure station name to lowercase
+        const departureStationName = journey["Departure station name"].toLowerCase()
         return departureStationName.includes(lowercaseSearchText);
       });
     }
 
     if (searchTextReturn) {
-      const lowercaseSearchText = searchTextReturn.toLowerCase(); // Convert search text to lowercase
+      const lowercaseSearchText = searchTextReturn.toLowerCase()
       filteredJourneys = filteredJourneys.filter(journey => {
-        const returnStationName = journey["Return station name"].toLowerCase(); // Convert departure station name to lowercase
+        const returnStationName = journey["Return station name"].toLowerCase()
         return returnStationName.includes(lowercaseSearchText);
       });
     }
+
+    //filteröi matkan keston mukaan
+
+    if (durationRange === 'short') 
+      filteredJourneys = filteredJourneys.filter(journey => {
+      const journeyDuration = journey["Duration (sec"][")"]
+      const durationMinutes = Math.floor(journeyDuration / 60)
+      console.log(filteredJourneys)
+      return durationMinutes <= 5
+    })
     
+    if (durationRange === 'medium') 
+      filteredJourneys = filteredJourneys.filter(journey => {
+      const journeyDuration = journey["Duration (sec"][")"]
+      const durationMinutes = Math.floor(journeyDuration / 60)
+      console.log(filteredJourneys)
+      return durationMinutes > 5 && durationMinutes <= 10
+    })
 
-
-
-    //const minDistance = 1000;
-
-    //let filteredJourneys = allJourneys&&allJourneys.filter((journey) => journey["Covered distance (m)"] >= minDistance);
-    //if (showAll) filteredJourneys = [...allJourneys]
+    if (durationRange === 'long') 
+    filteredJourneys = filteredJourneys.filter(journey => {
+    const journeyDuration = journey["Duration (sec"][")"]
+    const durationMinutes = Math.floor(journeyDuration / 60)
+    console.log(filteredJourneys)
+    return durationMinutes > 10
+  })
 
 
   
@@ -122,6 +139,12 @@ const ShowJourneys = ({journeys}) => {
         <h3>Palauttaa serveriin parametrina asetetun sivun matkat (40 kpl per sivu)</h3>
         <input placeholder="Hae lähtöasema" onChange={ev => setSearchTextDeparture(ev.target.value)}></input>
         <input placeholder="Hae saapumisasema" onChange={ev => setSearchTextReturn(ev.target.value)}></input>
+        <select className="" aria-label="Default select example" onChange={ev => setDurationRange(ev.target.value)}>
+                        <option value="all">Kaikki</option>
+                        <option value="short">0-5 min</option>
+                        <option value="medium">5-10 min</option>
+                        <option value="long">+10 min</option>
+                    </select>
         <ShowJourneys journeys = {filteredJourneys} />  
     </div>
     )
