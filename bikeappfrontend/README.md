@@ -79,3 +79,5 @@ palvelimen ja selaimen väliseen kommunikaatioon käytössä axios!
 npm i react-router-dom
 npm install @mui/material @emotion/react @emotion/styled
 $ npm install react-draggable-> voi poistaa
+$ npm install csv-parser
+

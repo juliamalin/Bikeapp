@@ -2,13 +2,11 @@ const express = require('express')
 const app = express()
 var bodyParser = require('body-parser');
 const cors = require('cors');
-var mongoose = require('mongoose');
-var multer = require('multer');
-var csv = require('csvtojson');
+const csv = require('csv-parser');
+const fs = require('fs');
 
 require('dotenv').config()
 
-var upload = multer({ dest: 'uploads/' });
 app.use(cors())
 app.use(express.json())
 
@@ -46,6 +44,20 @@ app.get('/api/journeys', (req, res) => {
         res.status(500).json({ error: 'An error occurred while counting documents' });
       });
   });
+
+  app.get('/api/stations', (req, res) => {
+    const results = [];
+    fs.createReadStream('../Bikeapp/uploads/asemat.csv')
+      .pipe(csv())
+      .on('data', (data) => {
+        results.push(data);
+      })
+      .on('end', () => {
+        res.json(results);
+      });
+  });
+  
+
 
 
 const PORT = process.env.PORT
