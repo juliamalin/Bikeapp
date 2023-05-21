@@ -20,7 +20,7 @@ app.use(express.static('build'))
 
 app.get('/api/journeys', (req, res) => {
     const page = parseInt(3) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
-    const limit = 20; // Number of documents to display per page
+    const limit = 40; // Number of documents to display per page
   
     journeyModel.countDocuments({}) // Get the total count of documents
       .then((totalDocuments) => {

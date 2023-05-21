@@ -1,11 +1,11 @@
+import React from "react"
 import { useState, useEffect } from 'react'
 import journeyService from '../services/journeygetters'
 
 
-
 const ShowJourneys = ({journeys}) => {
     console.log(journeys)
-    if (!journeys.items) {
+    if (!journeys) {
       return null
     }
   
@@ -21,7 +21,7 @@ const ShowJourneys = ({journeys}) => {
     return (
       <div>
       {renderHeaders()}
-      {journeys.items.map((journey) => (
+      {journeys.map((journey) => (
         <Journey 
         key={journey.id} 
         departure_name={journey["Departure station name"]}
@@ -67,25 +67,62 @@ const ShowJourneys = ({journeys}) => {
   }
   
   export const Journeys = () => {
-    const [journeys, setJourneys] = useState([])
+    const [allJourneys, setJourneys] = useState([])
+
+    const [sortBy, setSortBy] = React.useState('all')
+    const [searchTextDeparture, setSearchTextDeparture] = React.useState('')
+    const [searchTextReturn, setSearchTextReturn] = React.useState('')
   
     useEffect(()=> {
       journeyService
       .getAll()
       .then(initialJourney => {
-        setJourneys(initialJourney)
+        setJourneys(initialJourney.items)
         console.log(initialJourney)
       })
       .catch(error => {
         console.error('Error fetching journeys:', error)
       })
       }, [])
+
+    console.log(allJourneys)
+
+    //filter journeys based on search results
+    let filteredJourneys = [...allJourneys];
+
+    if (searchTextDeparture) {
+      const lowercaseSearchText = searchTextDeparture.toLowerCase(); // Convert search text to lowercase
+      filteredJourneys = filteredJourneys.filter(journey => {
+        const departureStationName = journey["Departure station name"].toLowerCase(); // Convert departure station name to lowercase
+        return departureStationName.includes(lowercaseSearchText);
+      });
+    }
+
+    if (searchTextReturn) {
+      const lowercaseSearchText = searchTextReturn.toLowerCase(); // Convert search text to lowercase
+      filteredJourneys = filteredJourneys.filter(journey => {
+        const returnStationName = journey["Return station name"].toLowerCase(); // Convert departure station name to lowercase
+        return returnStationName.includes(lowercaseSearchText);
+      });
+    }
+    
+
+
+
+    //const minDistance = 1000;
+
+    //let filteredJourneys = allJourneys&&allJourneys.filter((journey) => journey["Covered distance (m)"] >= minDistance);
+    //if (showAll) filteredJourneys = [...allJourneys]
+
+
   
     return(
     <div>
         <h2>Kaikki matkat</h2>
-        <h3>Palauttaa serveriin paramterina asetetun sivun matkat (20 kpl)</h3>
-        <ShowJourneys journeys = {journeys} />  
+        <h3>Palauttaa serveriin parametrina asetetun sivun matkat (40 kpl per sivu)</h3>
+        <input placeholder="Hae lähtöasema" onChange={ev => setSearchTextDeparture(ev.target.value)}></input>
+        <input placeholder="Hae saapumisasema" onChange={ev => setSearchTextReturn(ev.target.value)}></input>
+        <ShowJourneys journeys = {filteredJourneys} />  
     </div>
     )
   }

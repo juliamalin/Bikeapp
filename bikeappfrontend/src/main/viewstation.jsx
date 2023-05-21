@@ -37,19 +37,19 @@ export default function DraggableDialog({ station, stationInfo, open, setOpen, d
           open={open}
           onClose={() => setOpen(false)}
         >
-          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">Aseman tiedot</DialogTitle>
+          <DialogTitle style={{ cursor: 'move', fontWeight:'bold' }} id="draggable-dialog-title">Aseman tiedot</DialogTitle>
           <DialogContent className="dialog-content">
           {selectedStationInfo && (
-            <div>
-              <div>Nimi: {selectedStationInfo.Nimi}</div>
-              <div>Osoite: {selectedStationInfo.Osoite}</div>
-              <div>Asemalta lähtevien matkojen lkm: {selectedDepartureStationCount.count}</div>
-              <div>Asemalle saapuvien matkojen lkm: {selectedReturnStationCount.count}</div>
-              <div>Asemalta lähtevien matkojen keskimääräinen pituus: {formattedDepartureStationDistance}</div>
-              <div>Asemalle saapuvien matkojen keskimääräinen pituus: {formattedReturnStationDistance}</div>
-              <div>Asemalta lähtievien matkojen top5 paluuasemat: {selectedDepartureStationCount.topReturnStations.join(', ')}</div>
-              <div>Asemalle saapuvien matkojen top5 lähtöasemat: {selectedReturnStationCount.topDepartureStations.join(', ')}</div>
-            </div>
+               <div>
+               <div><strong>Nimi:</strong> {selectedStationInfo.Nimi}</div>
+               <div><strong>Osoite:</strong> {selectedStationInfo.Osoite}</div>
+               <div><strong>Asemalta lähtevien matkojen lkm:</strong> {selectedDepartureStationCount.count}</div>
+               <div><strong>Asemalle saapuvien matkojen lkm:</strong> {selectedReturnStationCount.count}</div>
+               <div><strong>Asemalta lähtevien matkojen keskimääräinen pituus:</strong> {formattedDepartureStationDistance}</div>
+               <div><strong>Asemalle saapuvien matkojen keskimääräinen pituus:</strong> {formattedReturnStationDistance}</div>
+               <div><strong>Asemalta lähtievien matkojen top5 paluuasemat:</strong> {selectedDepartureStationCount.topReturnStations.join(', ')}</div>
+               <div><strong>Asemalle saapuvien matkojen top5 lähtöasemat:</strong> {selectedReturnStationCount.topDepartureStations.join(', ')}</div>
+             </div>
           )}
           </DialogContent>
           <DialogActions>
