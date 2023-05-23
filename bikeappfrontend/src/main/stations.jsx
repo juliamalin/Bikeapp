@@ -17,6 +17,7 @@ export const Stations = () => {
   const allJourneysStations = useSelector(state => state.allJourneysStations.allJourneysStations)
   const totalPages = useSelector(state => state.allJourneysStations.totalPages);
   const currentPage = useSelector(state => state.allJourneysStations.currentPage);
+  const loading = useSelector((state) => state.journey.loading);
   const [searchStation, setStation] = React.useState('')
   const [open, setOpen] = React.useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
@@ -55,7 +56,7 @@ export const Stations = () => {
 
   return (
     <div>
-      <h2>Kaikki asemat</h2>
+      <h2>Asemat</h2>
       <input placeholder="Hae asema" onChange={ev => setStation(ev.target.value)}></input>
       <h4>Klikkamalla asemaa saat näkyville tarkemmat tiedot</h4>
       {filteredStations.map((station) => (
@@ -68,7 +69,11 @@ export const Stations = () => {
             setSelectedStation(station)
           }
           }}>
-          {station}
+          {loading ? (
+            <div>Loading...</div>
+            ):(
+          <div>{station}</div>
+          )}
           </article>
           ))}
           {open && (

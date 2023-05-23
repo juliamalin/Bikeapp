@@ -12,17 +12,17 @@ mongoose.connect(url)
     })
 
 const journeySchema = new mongoose.Schema({
-    departure: Date,
-    return: Date,
-    departure_stationID: Number,
+    Departure: Date,
+    Return: Date,
+    "Departure station id": Number,
     "Departure station name": String,
-    return_stationID: Number,
+    "Return station id": Number,
     "Return station name": String,
-    distance: {
+    "Covered distance (m)": {
         type: Number,
         min: 10
     },
-    duration: {
+    "Duration": {
         type: Number,
         min: 10
     }

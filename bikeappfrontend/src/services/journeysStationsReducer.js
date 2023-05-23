@@ -14,10 +14,18 @@ const journeysStationsSlice = createSlice({
   initialState,
   reducers: {
     setJourneysStations(state, action) {
-      return action.payload;
-    },
+      return {
+        ...action.payload,
+        loading:false
+      }},
     setCurrentPage(state, action) {
         state.currentPage = action.payload;
+    },
+     setLoading(state, action) {
+      state.loading = action.payload;
+    },
+    setError(state, action) {
+      state.error = action.payload;
     }
   }
 
@@ -25,16 +33,20 @@ const journeysStationsSlice = createSlice({
 )
 
 console.log(initialState.allJourneysStations);
-export const { setJourneysStations, setCurrentPage } = journeysStationsSlice.actions;
+export const { setJourneysStations, setCurrentPage, setLoading, setError } = journeysStationsSlice.actions;
 
-export const initializeJourneysStations = (currentpage) => {
-    return async dispatch => {
-      const journeysStations = await journeyService.getJourneysStations(currentpage)
-      dispatch(setJourneysStations(journeysStations))
-      console.log(journeysStations)
-      console.log(initialState.allJourneysStations)
-
+export const initializeJourneysStations = (currentPage) => {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoading(true));
+      const journeys = await journeyService.getJourneysStations(currentPage);
+      dispatch(setJourneysStations(journeys));
+    } catch (error) {
+      dispatch(setError(error.message));
+    } finally {
+      dispatch(setLoading(false));
     }
-  }
+  };
+};
 
 export default journeysStationsSlice.reducer

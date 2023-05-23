@@ -19,14 +19,13 @@ app.use(express.static('build'))
 
 
 app.get('/api/journeys', (req, res) => {
-  const limit = parseInt(req.query.limit) || 100; // Number of documents to display per page
-  let page = parseInt(req.query.page) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
+  const limit = parseInt(req.query.limit) || 50; 
+  let page = parseInt(req.query.page) || 1; 
 
-  journeyModel.countDocuments({}) // Get the total count of documents
+  journeyModel.countDocuments({}) 
     .then((totalDocuments) => {
-      const totalPages = Math.ceil(totalDocuments / limit); // Calculate the total number of pages based on the total count and the limit
+      const totalPages = Math.ceil(totalDocuments / limit); 
 
-      // Adjust the page number if it exceeds the total number of pages
       page = Math.min(page, totalPages);
 
       journeyModel.find({})
@@ -49,14 +48,13 @@ app.get('/api/journeys', (req, res) => {
 })
 
 app.get('/api/journeys/stations', (req, res) => {
-  const limit = parseInt(req.query.limit) || 100; // Number of documents to display per page
-  let page = parseInt(req.query.page) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
+  const limit = parseInt(req.query.limit) || 50; 
+  let page = parseInt(req.query.page) || 1; 
 
-  journeyModel.countDocuments({}) // Get the total count of documents
+  journeyModel.countDocuments({}) 
     .then((totalDocuments) => {
-      const totalPages = Math.ceil(totalDocuments / limit); // Calculate the total number of pages based on the total count and the limit
+      const totalPages = Math.ceil(totalDocuments / limit); 
 
-      // Adjust the page number if it exceeds the total number of pages
       page = Math.min(page, totalPages);
 
       journeyModel.find({})
@@ -92,8 +90,7 @@ app.get('/api/journeys/stations', (req, res) => {
       });
   });
 
-  //hakee jokaiselle asemalla sieltä lähtien matkojen lukumäärän ja keskipituuden, top5 paluuasemat
-  app.get('/api/journeys/count', (req, res) => {
+  app.get('/api/journeys/count/departurestation', (req, res) => {
     journeyModel.aggregate([
       {
         $group: {
@@ -125,7 +122,6 @@ app.get('/api/journeys/stations', (req, res) => {
       });
   });
 
-  //hakee jokaiselle asemalla sinne saapuvien matkojen lukumäärän ja keskipituuden, top5 lähtöasemat
   app.get('/api/journeys/count/returnstation', (req, res) => {
     journeyModel.aggregate([
       {
@@ -154,6 +150,55 @@ app.get('/api/journeys/stations', (req, res) => {
       .catch((err) => {
         console.log(err);
         res.status(500).json({ error: 'An error occurred while counting journeys' });
+      });
+  });
+
+  const generateId = () => {
+    const randomId = Math.floor(Math.random()*100)
+    return randomId
+}
+
+  app.post('/api/journeys', (req, res) => {
+    const {
+      departureTime,
+      returnTime,
+      departureStationId,
+      departureStationName,
+      returnStationId,
+      returnStationName,
+      distance,
+      duration,
+      id
+    } = req.body;
+
+    console.log('request body:', req.body)
+
+
+    if(!departureStationName || !returnStationName) {
+        return res.status(400).json({
+            error: 'content missing'
+        })
+    }
+  
+
+    const newJourney = new journeyModel({
+      Departure: departureTime,
+      Return: returnTime,
+      "Departure station id": departureStationId,
+      "Departure station name": departureStationName,
+      "Return station id": returnStationId,
+      "Return station name": returnStationName,
+      "Covered distance (m)": distance,
+      "Duration": duration
+    });
+  
+    newJourney.save()
+      .then((savedJourney) => {
+        res.status(201).json(savedJourney);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ error: 'An error occurred while saving the journey' });
       });
   });
   

@@ -27,7 +27,7 @@ const getStationinfo = () => {
 };
 
 const getJourneyCountsDepartureStation = () => {
-  const request = axios.get('http://localhost:3001/api/journeys/count');
+  const request = axios.get('http://localhost:3001/api/journeys/count/departurestation');
   return request.then((response) => response.data.counts);
 };
 
@@ -36,12 +36,19 @@ const getJourneyCountsReturnStation = () => {
   return request.then((response) => response.data.counts);
 };
 
+const createJourney = newObject => {
+  const baseUrl = ('http://localhost:3001/api/journeys')
+  const request = axios.post(baseUrl, newObject)
+  return request.then(response => response.data)
+}
+
 const journeyService = {
   getAllJourneys: getAllJourneys,
   getStationinfo: getStationinfo,
   getJourneyCountsDepartureStation: getJourneyCountsDepartureStation,
   getJourneyCountsReturnStation: getJourneyCountsReturnStation,
-  getJourneysStations: getJourneysStations
+  getJourneysStations: getJourneysStations,
+  createJourney: createJourney
 };
 
 export default journeyService;
