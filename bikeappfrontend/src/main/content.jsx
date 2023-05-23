@@ -18,7 +18,7 @@ export function Main() {
   
     return <main>
       <h1>Helsinki city bike app (Dev Academyn ennakkotehtävä)</h1>
-      <h3>Yläreunasta löytyy valikko jonka kautta pääsee matka- ja asemalistauksiin</h3>
+      <h3>Myös yläreunasta löytyy valikko jonka kautta pääsee matka- ja asemalistauksiin</h3>
       <p>
       <Link to="/journeys" className="link">Matkat</Link>
       <br />

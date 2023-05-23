@@ -46,8 +46,39 @@ app.get('/api/journeys', (req, res) => {
       console.log(err);
       res.status(500).json({ error: 'An error occurred while counting documents' });
     });
-});
+})
 
+app.get('/api/journeys/stations', (req, res) => {
+  const limit = parseInt(req.query.limit) || 100; // Number of documents to display per page
+  let page = parseInt(req.query.page) || 1; // Get the requested page from the query parameters, defaulting to page 1 if not provided
+
+  journeyModel.countDocuments({}) // Get the total count of documents
+    .then((totalDocuments) => {
+      const totalPages = Math.ceil(totalDocuments / limit); // Calculate the total number of pages based on the total count and the limit
+
+      // Adjust the page number if it exceeds the total number of pages
+      page = Math.min(page, totalPages);
+
+      journeyModel.find({})
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .then((items) => {
+          const allJourneysStations = [...new Set([
+            ...items.map((journey) => journey["Departure station name"]),
+            ...items.map((journey) => journey["Return station name"])
+          ])];
+          res.json({ allJourneysStations,totalPages, currentPage: page });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ error: 'An error occurred while fetching journeys' });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'An error occurred while counting documents' });
+    });
+});
 
   app.get('/api/stations', (req, res) => {
     const results = [];
@@ -94,7 +125,7 @@ app.get('/api/journeys', (req, res) => {
       });
   });
 
-    //hakee jokaiselle asemalla sinne saapuvien matkojen lukumäärän ja keskipituuden, top5 lähtöasemat
+  //hakee jokaiselle asemalla sinne saapuvien matkojen lukumäärän ja keskipituuden, top5 lähtöasemat
   app.get('/api/journeys/count/returnstation', (req, res) => {
     journeyModel.aggregate([
       {
@@ -126,8 +157,6 @@ app.get('/api/journeys', (req, res) => {
       });
   });
   
-
-
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

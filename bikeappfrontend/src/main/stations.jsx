@@ -1,89 +1,64 @@
-import React from "react";
-import { useState, useEffect } from 'react'
-import journeyService from '../services/journeygetters'
-import DraggableDialog from './viewstation'
+import React from "react"
+import { useEffect,useState } from 'react'
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import ViewStation from './viewstation'
+import { initializeStations  } from "../services/stationReducer";
 import './content.css';
-
+import { initializeJourneyDepartureCounts } from "../services/journeyCountsDepartureReducer";
+import { initializeJourneyReturnCounts } from "../services/journeyCountsReturnReducer";
+import { initializeJourneysStations, setCurrentPage } from "../services/journeysStationsReducer";
 
 export const Stations = () => {
-  const [departureStations, setDepartureStations] = useState([]);
-  const [returnStations, setReturnStations] = useState([]);
-  const [countDepartureStation, setcountDepartureStation] = useState([]);
-  const [countReturnStation, setCountReturnStation] = useState([]);
-  const [stationData, setStationData] = useState([]);
+  const dispatch = useDispatch();
+  const stationData = useSelector(state => state.stations.stations)
+  const countDepartureStation = useSelector(state => state.countsDeparture.countsDeparture)
+  const countReturnStation = useSelector(state => state.countsReturn.countsReturn)
+  const allJourneysStations = useSelector(state => state.allJourneysStations.allJourneysStations)
+  const totalPages = useSelector(state => state.allJourneysStations.totalPages);
+  const currentPage = useSelector(state => state.allJourneysStations.currentPage);
+  const [searchStation, setStation] = React.useState('')
   const [open, setOpen] = React.useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-
-
-  console.log(countDepartureStation)
-  console.log(countReturnStation)
-
+   useEffect(() => {
+    dispatch(initializeStations());
+    dispatch(initializeJourneyDepartureCounts());
+    dispatch(initializeJourneyReturnCounts());
+  }, [dispatch]);
 
   useEffect(() => {
-    journeyService
-      .getAll()
-      .then((stationData) => {
-        setDepartureStations(stationData.uniqueDepartureStations)
-        setReturnStations(stationData.uniqueReturnStations)
-        setLoading(false)
-        //console.log(stationData);
-      })
-      .catch((error) => {
-        console.error('Error fetching stations:', error)
-      })
+    dispatch(initializeJourneysStations(currentPage));
+  }, [currentPage, dispatch]);
 
-    journeyService
-      .getStationinfo()
-      .then((stationInformation) => {
-        setStationData(stationInformation)
-        setLoading(false)
-        //console.log(stationInformation);
-      })
-      .catch((error) => {
-        console.error('Error fetching station data:', error)
-      })
+  let filteredStations = [...allJourneysStations];
 
-      journeyService
-      .getJourneyCountsDepartureStation()
-      .then((stationInformation) => {
-        setcountDepartureStation(stationInformation)
-        setLoading(false)
-        //console.log(stationInformation);
-      })
-      .catch((error) => {
-        console.error('Error fetching all items:', error);
-      })
-
-      journeyService
-      .getJourneyCountsReturnStation()
-      .then((stationInformation) => {
-        setCountReturnStation(stationInformation)
-        setLoading(false)
-        //console.log(stationInformation);
-      })
-      .catch((error) => {
-        console.error('Error fetching all items:', error);
-      })
-  }, []);
-
-
-  if (loading) {
-    return <div>Loading...</div>
+  if (searchStation) {
+    const lowercaseSearchStation = searchStation.toLowerCase()
+    filteredStations = filteredStations.filter(station => {
+      const stationName = station.toLowerCase()
+      return stationName.includes(lowercaseSearchStation);
+    });
   }
 
-  if (!departureStations && !returnStations) {
-    return null;
-  }
-
-  const mergedSet = new Set([...departureStations, ...returnStations]);
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      dispatch(setCurrentPage(currentPage - 1));
+    }
+  };
+  
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      dispatch(setCurrentPage(currentPage + 1));
+    }
+  };
 
   return (
     <div>
       <h2>Kaikki asemat</h2>
+      <input placeholder="Hae asema" onChange={ev => setStation(ev.target.value)}></input>
       <h4>Klikkamalla asemaa saat näkyville tarkemmat tiedot</h4>
-      {Array.from(mergedSet).map((station) => (
+      {filteredStations.map((station) => (
         <article 
         key={station} 
         className="station-excerpt" 
@@ -94,11 +69,25 @@ export const Stations = () => {
           }
           }}>
           {station}
+          </article>
+          ))}
           {open && (
-            <DraggableDialog station={selectedStation} open={open} setOpen={setOpen} stationInfo={stationData} departureStationCount={countDepartureStation} returnStationCount={countReturnStation}/>
+            <ViewStation
+            station={selectedStation} 
+            open={open}
+            setOpen={setOpen} 
+            stationInfo={stationData} 
+            departureStationCount={countDepartureStation} 
+            returnStationCount={countReturnStation}
+            />
           )}
-        </article>
-      ))}
+           <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+          Previous Page
+          </button>
+          <button onClick={goToNextPage} disabled={currentPage === totalPages}>
+            Next Page
+          </button>
+          <span>Page {currentPage} of {totalPages}</span>
     </div> 
   );
 }

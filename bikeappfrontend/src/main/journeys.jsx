@@ -1,14 +1,12 @@
 import React from "react"
-import { useState, useEffect } from 'react'
-import journeyService from '../services/journeygetters'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import { initializeJourneys, setCurrentPage } from "../services/journeyReducer";
+
 
 
 const ShowJourneys = ({journeys}) => {
-   /*console.log(journeys)
-    if (!journeys) {
-      return null
-    }*/
-  
     const renderHeaders = () => (
       <div className="journey">
         <div><strong>Lähtöasema:</strong></div>
@@ -67,31 +65,18 @@ const ShowJourneys = ({journeys}) => {
   }
   
   export const Journeys = () => {
-    const [allJourneys, setJourneys] = useState([])
+    const dispatch = useDispatch();
+    const allJourneys = useSelector(state => state.journey.items);
+    const totalPages = useSelector(state => state.journey.totalPages);
+    const currentPage = useSelector(state => state.journey.currentPage);
     const [searchTextDeparture, setSearchTextDeparture] = React.useState('')
     const [searchTextReturn, setSearchTextReturn] = React.useState('')
     const [durationRange, setDurationRange] = React.useState('all')
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+
 
     useEffect(() => {
-      const fetchJourneys = async (page) => {
-        try {
-          const response = await journeyService.getAll(page);
-          const { items, totalPages, currentPage } = response;
-          setJourneys(items);
-          setTotalPages(totalPages);
-          setCurrentPage(currentPage);
-        } catch (error) {
-          console.error('Error fetching journeys:', error);
-        }
-      };
-    
-      fetchJourneys(currentPage);
-    }, [currentPage]);
-
-    console.log(allJourneys)
-
+      dispatch(initializeJourneys(currentPage));
+    }, [currentPage, dispatch]);
 
     //filteröi matkat tekstihaun perusteella
     let filteredJourneys = [...allJourneys];
@@ -141,18 +126,16 @@ const ShowJourneys = ({journeys}) => {
 
 
   const goToPreviousPage = () => {
-    setCurrentPage((prevPage) => {
-      if (prevPage > 1) {
-        return prevPage - 1;
-      }
-      return prevPage;
-    });
+    if (currentPage > 1) {
+      dispatch(setCurrentPage(currentPage - 1));
+    }
   };
   
   const goToNextPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (currentPage < totalPages) {
+      dispatch(setCurrentPage(currentPage + 1));
+    }
   };
-
 
     return(
     <div>
