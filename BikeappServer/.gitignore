@@ -1,0 +1,5 @@
+**/node_modules
+.env
+**/valid_rows2021-05.csv
+**/valid_rows2021-06.csv
+**/valid_rows2021-07.csv
