@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appendJourney } from '../services/journeyReducer';
-import { InputLabel, TextField, Button, Dialog, DialogContent, DialogActions } from '@mui/material';
+import { InputLabel, TextField, Button, Dialog, DialogContent, DialogActions, Snackbar, DialogContentText } from '@mui/material';
 import journeyService from '../services/journeygetters';
 
 export const JourneyForm = () => {
@@ -16,23 +16,49 @@ export const JourneyForm = () => {
     distance: '',
     duration: '',
   });
-  const [open, setOpen] = useState(false);
+
+  const [open, setOpen] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [responseStatus, setResponseStatus] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setJourneyData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
+    }))
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(appendJourney(journeyData));
-    journeyService.createJourney(journeyData);
-    setOpen(true);
-    resetForm();
-  };
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  const validationErrors = validateForm(journeyData);
+  if (Object.keys(validationErrors).length === 0) {
+    try {
+      dispatch(appendJourney(journeyData));
+      await journeyService.createJourney(journeyData);
+      setOpen(true);
+      resetForm();
+      setResponseStatus(200)
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        console.log('Error: Bad Request');
+      } else {
+        console.log('Error:', error.message);
+      }
+    }
+  } else {
+    setErrors(validationErrors);
+    setOpenSnackbar(true)
+    console.log(validationErrors);
+  }
+};
+
 
   const resetForm = () => {
     setJourneyData({
@@ -45,10 +71,61 @@ export const JourneyForm = () => {
       distance: '',
       duration: '',
     });
+    setErrors({});
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const validateForm = (data) => {
+    const errors = {};
+
+    if (!data.departureTime) {
+      errors.departureTime = 'Departure time is required';
+    }
+
+    if (!data.returnTime) {
+      errors.returnTime = 'Return time is required';
+    } 
+
+    if (!data.departureStationId) {
+      errors.departureStationId = 'Departure station id is required';
+    } else if (isNaN(data.departureStationId)) {
+      errors.departureStationId = 'Departure station id  must be a number';
+    }
+
+    if (!data.departureStationName) {
+      errors.departureStationName = 'Departure station name is required';
+    } else if (typeof data.departureStationName !== 'string') {
+      errors.departureStationName = 'Departure station name must be a string';
+    }
+
+    if (!data.returnStationId) {
+      errors.returnStationId = 'Return station id is required';
+    } else if (isNaN(data.returnStationId)) {
+      errors.returnStationId = 'Return station id  must be a number';
+    }
+
+    if (!data.returnStationName) {
+      errors.returnStationName = 'Return station name is required';
+    } else if (typeof data.returnStationName !== 'string') {
+      errors.returnStationName = 'Return station name must be a string';
+    }
+
+    if (!data.distance) {
+      errors.distance = 'Distance is required';
+    } else if (isNaN(data.distance)) {
+      errors.duration = 'Distance must be a number';
+    }
+
+    if (!data.duration) {
+      errors.duration = 'Duration is required';
+    } else if (isNaN(data.duration)) {
+      errors.duration = 'Duration must be a number';
+    }
+
+    return errors;
   };
 
   return (
@@ -110,7 +187,7 @@ export const JourneyForm = () => {
   </div>
   <div style={{ marginBottom: '20px', marginTop: '20px' }}>
     <TextField
-      label="Distance"
+      label="Distance (meters)"
       type="number"
       name="distance"
       value={journeyData.distance}
@@ -119,7 +196,7 @@ export const JourneyForm = () => {
   </div>
   <div style={{ marginBottom: '20px', marginTop: '20px' }}>
     <TextField
-      label="Duration"
+      label="Duration (seconds)"
       type="number"
       name="duration"
       value={journeyData.duration}
@@ -140,6 +217,24 @@ export const JourneyForm = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar 
+      open={openSnackbar} 
+      autoHideDuration={5000} 
+      onClose={handleCloseSnackbar}
+      style={{
+        backgroundColor: 'red',
+        opacity: 1,
+        right: '10px',
+      }}
+      >
+        <DialogContentText>
+          <ul>
+            {Object.entries(errors).map(([field, message]) => (
+              <li key={field}>{`${field}: ${message}`}</li>
+            ))}
+          </ul>
+        </DialogContentText>
+      </Snackbar>
     </form>
   );
 };

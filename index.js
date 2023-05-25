@@ -12,6 +12,7 @@ app.use(express.json())
 
 const journeyModel = require('./model/info')
 
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -46,6 +47,7 @@ app.get('/api/journeys', (req, res) => {
       res.status(500).json({ error: 'An error occurred while counting documents' });
     });
 })
+
 
 app.get('/api/journeys/stations', (req, res) => {
   const limit = parseInt(req.query.limit) || 50; 
