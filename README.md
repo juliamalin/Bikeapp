@@ -41,5 +41,6 @@ Virhekäsittelyä löytyy uusien matkojen lisäämiseen tarkoitetun lomakkeen os
 -Käyttöliittymän testaus
 -Uuden matkan lisäämisen yhteydessä aika tallentuu tietokantaan vielä väärin, tämän korjaaminen
 
-
+#HUOM!!
+Sovelluksen koodi löytyy Gitissä Bikeapp-repositoryn haarasta 'master'
 
