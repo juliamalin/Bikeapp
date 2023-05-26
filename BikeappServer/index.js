@@ -22,6 +22,9 @@ app.use(express.static('build'))
 app.get('/api/journeys', (req, res) => {
 	const limit = parseInt(req.query.limit) || 50
 	let page = parseInt(req.query.page) || 1
+	if (page === 0) {
+		page = 1
+	}
 
 	journeyModel.countDocuments({})
 		.then((totalDocuments) => {
@@ -52,7 +55,9 @@ app.get('/api/journeys', (req, res) => {
 app.get('/api/journeys/stations', (req, res) => {
 	const limit = parseInt(req.query.limit) || 50
 	let page = parseInt(req.query.page) || 1
-
+	if (page === 0) {
+		page = 1
+	}
 	journeyModel.aggregate([
 		{
 			$group: {
