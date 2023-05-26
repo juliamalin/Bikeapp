@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 export const getAllJourneys = (page) => {
-    const request = axios.get(`http://localhost:3001/api/journeys?page=${page}`)
+    const request = axios.get(`api/journeys?page=${page}`)
     return request.then((response) => ({
         items: Object.values(response.data.items),
         totalPages: response.data.totalPages,
@@ -13,7 +13,7 @@ export const getAllJourneys = (page) => {
 }
 
 const getJourneysStations = (page) => {
-    const request = axios.get(`http://localhost:3001/api/journeys/stations?page=${page}`)
+    const request = axios.get(`api/journeys/stations?page=${page}`)
     return request.then((response) => ({
         allJourneysStations: response.data.paginatedStations,
         totalPages: response.data.totalPages,
@@ -22,22 +22,22 @@ const getJourneysStations = (page) => {
 }
 
 const getStationinfo = () => {
-    const request = axios.get('http://localhost:3001/api/stations')
+    const request = axios.get('api/stations')
     return request.then((response) => response.data)
 }
 
 const getJourneyCountsDepartureStation = () => {
-    const request = axios.get('http://localhost:3001/api/journeys/count/departurestation')
+    const request = axios.get('hapi/journeys/count/departurestation')
     return request.then((response) => response.data.counts)
 }
 
 const getJourneyCountsReturnStation = () => {
-    const request = axios.get('http://localhost:3001/api/journeys/count/returnstation')
+    const request = axios.get('api/journeys/count/returnstation')
     return request.then((response) => response.data.counts)
 }
 
 const createJourney = newObject => {
-    const baseUrl = ('http://localhost:3001/api/journeys')
+    const baseUrl = ('api/journeys')
     const request = axios.post(baseUrl, newObject)
     return request.then(response => response.data)
 }
