@@ -17,7 +17,7 @@ export const Stations = () => {
     const allJourneysStations = useSelector(state => state.allJourneysStations.allJourneysStations)
     const totalPages = useSelector(state => state.allJourneysStations.totalPages)
     const currentPage = useSelector(state => state.allJourneysStations.currentPage)
-    const loading = useSelector((state) => state.journey.loading)
+    const loading = useSelector((state) => state.allJourneysStations.loading)
     const [searchStation, setStation] = React.useState('')
     const [open, setOpen] = React.useState(false)
     const [selectedStation, setSelectedStation] = useState(null)
@@ -33,8 +33,6 @@ export const Stations = () => {
     }, [currentPage, dispatch])
 
     let filteredStations = allJourneysStations.flat()
-    console.log(filteredStations)
-    console.log(countReturnStation)
 
     if (searchStation) {
         const lowercaseSearchStation = searchStation.toLowerCase()
