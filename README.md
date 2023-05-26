@@ -16,16 +16,16 @@ Tietokanta: MongoDB
 Valitsin Back Endiin Node.js:n sekä tietokannaksi Mongon, koska olin juuri perehtynyt niihin ja halusin harjoitella niiden käyttöä lisää. Front Endin puolella käytin Reactia, koska se oli entuudestaan tuttu ja siksi siltä puolelta itsellä vahvimmin hallussa. Ohjelmointikielenä käytin pääosin JavaScriptiä. 
 
 ##ASENNUS
-1. Sovellus on viety Renderiin ja löytyy osoitteesta https://bikeapp-usnx.onrender.com/
+1. Sovellus on viety Renderiin ja löytyy osoitteessa https://bikeapp-usnx.onrender.com/
 
 2. Localhostissa:
+- Avaa komentotulkki
 - Kloonaa repository: git clone https://github.com/juliamalin/Bikeapp
 - Määritä ympäristömuuttujat: tee ./BikeappServer-kansioon .env-tiedosto: .env-tiedostoon tulee merkata MONGODB_URI sekä PORT=3001 (tiedosto ei gitissä)
+- Suorita polussa ./BikeappServer komento: npm install
 - Käynnistä serveri polussa ./BikeappServer: node index.js <MongoTietokannan salasana>
-- Asenna Front Endin riippuvuudet polussa ./BikeappClient: npm install
-- Käynnistä React-sovellus polussa ./BikeappClient: npm start
+- Huom! Frontille tehty build ja frontin API-tiedostossa käytetty suhteellistä URL-osoitetta, koko sovellus siis toimii localhost:3001:ssä!
 
-Back End toimii localhostin portissa 3001. Front End toimii localhostin portissa 3000.
 
 ##TESTIT
 Datan oikeellisuutta testaavat testit löytyvät seuraavasta polusta: ./BikeappServer/
