@@ -28,3 +28,8 @@ C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxx
  C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxxxxx@cluster0.qakohat.mongodb.net/Journey?retryWrites=true&w=majority" --collection journeys --type csv --file "C:\training\Bikeapp\valid_rows2021-06.csv" --headerline
 
   C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxxxxx@cluster0.qakohat.mongodb.net/Journey?retryWrites=true&w=majority" --collection journeys --type csv --file "C:\training\Bikeapp\valid_rows2021-07.csv" --headerline
+
+
+  //git käsittelee päätteet
+
+  git config core.autocrlf true
