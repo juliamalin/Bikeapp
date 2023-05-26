@@ -1,41 +1,45 @@
-#Setup
+<h1>BikeApp</h1>
 
-Node.js (versio)
-Projektin luonti: npm init
-Käynnistys: npm start
-Express-kirjaston käyttöön otto: npm install express (versio: "^4.18.2")
-Nodemonin asennus: npm install --save-dev nodemon (kehitysaikainen riippuvuus)
-Määritellään npm-skripti: "dev": "nodemon index.js"
-Asennetaan cors: npm install cors
-Asennetaan mongoose: npm install mongoose
-Asennetaan dotenv: npm install dotenv 
-Asennukset: mongodb??
+Bike App on sovellus, joka on suunniteltu tarjoamaan tietoa pyöräasemista ja matkoista. Sen avulla käyttäjät voivat saada tiedot pyöräillyistä matkoista, tarkastella asemien ​​tietoja sekä lisätä matkoja. 
 
-#Käynnistys
-Kloonaa repo
-npm install
-npm start tai npm run dev
-npm install mongoose-paginate-v2 -> poista!!!
+#OMINAISUUDET
+-Pyöräiltyjen matkojen etsiminen lähtö- tai saapumisaseman nimen perusteella tai matkan keston perusteella
+-Pyöräasemien haku nimen perusteella
+-Mahdollisuus tarkastella yksityiskohtaisia ​​tietoja pyöräasemista (nimi, osoite, lähtevien ja saapuvien matkoja lkm, lähtevien ja saapuvien matkojen keskimääräinen pituus, asemalta lähtevien matkoja top5 paluuasemat, asemalle saapuvien matkojen top5 lähtöasemat)
+-Mahdollisuus lisätä uusi matka antamalla lomakkeelle matkan tiedot
 
-#Validointi
-https://pypi.org/project/csvvalidator/
-https://github.com/alimanfoo/csvvalidator -> SIISTI TIEDOSTOJA
+#KÄYTETYT TEKNIIKAT
+Back End: Node.js, Express.js, JavaScript, MongoDB aggregation framework syntax 
+Front End: React, HTML, CSS, JavaScript, Redux
+Tietokanta: MongoDB
+
+Valitsin Back Endiin Node.js:n sekä tietokannaksi Mongon, koska olin juuri perehtynyt niihin ja halusin harjoitella niiden käyttöä lisää. Front Endin puolella käytin Reactia, koska se oli entuudestaan tuttu ja siksi siltä puolelta itsellä vahvimmin hallussa. Ohjelmointikielenä käytin pääosin JavaScriptiä. 
+
+#ASENNUS
+1.Sovellus on viety Renderiin ja löytyy osoitteesta https://bikeapp-usnx.onrender.com/
+
+2.Localhostissa:
+-Kloonaa repository: git clone https://github.com/juliamalin/Bikeapp
+-Määritä ympäristömuuttujat: tee ./BikeappServer-kansioon .env-tiedosto: .env-tiedostoon tulee merkata MONGODB_URI sekä PORT=3001 (tiedosto ei gitissä)
+-Käynnistä serveri polussa ./BikeappServer: node index.js <MongoTietokannan salasana>
+-Asenna Front Endin riippuvuudet polussa ./BikeappClient: npm install
+-Käynnistä React-sovellus polussa ./BikeappClient: npm start
+
+Back End toimii localhostin portissa 3001. Front End toimii localhostin portissa 3000.
+
+#TESTIT
+Datan oikeellisuutta testaavat testit löytyvät seuraavasta polusta: ./BikeappServer/
+Huom! vaatii toimiakseen .env-tiedoston, johon asetettuna ympäristömuuttuja MONGODB_URI
+Avaa terminaali VSCodessa: View > Terminal
+Kirjoita terminaaliin: node datasettest.js (polussa./BikeappServer)
+Testaus käynnistyy
+
+Virhekäsittelyä löytyy uusien matkojen lisäämiseen tarkoitetun lomakkeen osalta Clientin puolella addJourney-tiedostossa.
+
+#TODO
+-Testit, jotka testaavat API-toimintoja frontin sekä back endin puolella
+-Käyttöliittymän testaus
+-Uuden matkan lisäämisen yhteydessä aika tallentuu tietokantaan vielä väärin, tämän korjaaminen
 
 
-#datan vieminen tietokantaan (CMD:n kautta)
-C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxxxxx@cluster0.qakohat.mongodb.net/Journey?retryWrites=true&w=majority" --collection journeys --type csv --file "C:\training\Bikeapp\valid_rows2021-05.csv" --headerline
 
- C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxxxxx@cluster0.qakohat.mongodb.net/Journey?retryWrites=true&w=majority" --collection journeys --type csv --file "C:\training\Bikeapp\valid_rows2021-06.csv" --headerline
-
-  C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxxxxx@cluster0.qakohat.mongodb.net/Journey?retryWrites=true&w=majority" --collection journeys --type csv --file "C:\training\Bikeapp\valid_rows2021-07.csv" --headerline
-
-
-  //git käsittelee päätteet
-
-  git config core.autocrlf true
-  gitissä master haarassa
-  
-
-
-//Overall, the code is a combination of JavaScript (for defining the Express route handler) and MongoDB aggregation framework syntax 
-//serveripuolella käytössä kyseinen framwork

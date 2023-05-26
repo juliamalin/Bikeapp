@@ -1,10 +1,11 @@
-const moment = require('moment')
 const { MongoClient } = require('mongodb')
+const moment = require('moment')
 require('dotenv').config()
+const url = process.env.MONGODB_URI
 
 async function validateJourneys() {
-	const uri = process.env.MONGODB_URI
-	const client = new MongoClient(uri)
+	console.log('connecting to', url)
+	const client = new MongoClient(url)
 
 	try {
 		await client.connect()
