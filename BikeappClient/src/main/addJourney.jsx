@@ -52,7 +52,6 @@ export const JourneyForm = () => {
         } else {
             setErrors(validationErrors)
             setOpenSnackbar(true)
-            console.log(errors)
         }
     }
 
@@ -96,34 +95,37 @@ export const JourneyForm = () => {
             errors.departureStationName = 'Departure station name is required'
         } else if (!/^[\w\säöÄÖ]+$/.test(data.departureStationName)) {
             errors.departureStationName = 'Departure station name must be a string'
-
-            if (!data.returnStationId) {
-                errors.returnStationId = 'Return station id is required'
-            } else if (isNaN(data.returnStationId)) {
-                errors.returnStationId = 'Return station id  must be a number'
-            }
-
-            if (!data.returnStationName) {
-                errors.returnStationName = 'Return station name is required'
-            } else if (!/^[\w\säöÄÖ]+$/.test(data.returnStationName)) {
-                errors.returnStationName = 'Return station name must be a string'
-            }
-
-            if (!data.distance) {
-                errors.distance = 'Distance is required'
-            } else if (isNaN(data.distance)) {
-                errors.duration = 'Distance must be a number'
-            }
-
-            if (!data.duration) {
-                errors.duration = 'Duration is required'
-            } else if (isNaN(data.duration)) {
-                errors.duration = 'Duration must be a number'
-            }
-
         }
+
+        if (!data.returnStationId) {
+            errors.returnStationId = 'Return station id is required'
+        } else if (isNaN(data.returnStationId)) {
+            errors.returnStationId = 'Return station id  must be a number'
+        }
+
+        if (!data.returnStationName) {
+            errors.returnStationName = 'Return station name is required'
+        } else if (!/^[\w\säöÄÖ]+$/.test(data.returnStationName)) {
+            errors.returnStationName = 'Return station name must be a string'
+        }
+
+        if (!data.distance) {
+            errors.distance = 'Distance is required'
+        } else if (isNaN(data.distance)) {
+            errors.distance = 'Distance must be a number'
+        }
+
+        if (!data.duration) {
+            errors.duration = 'Duration is required'
+        } else if (isNaN(data.duration)) {
+            errors.duration = 'Duration must be a number'
+        }
+
         return errors
     }
+
+    console.log(errors)
+
 
     return (
         <form onSubmit={handleSubmit}>
