@@ -121,8 +121,8 @@ export const JourneyForm = () => {
                 errors.duration = 'Duration must be a number'
             }
 
-            return errors
         }
+        return errors
     }
 
     return (
