@@ -53,32 +53,48 @@ app.get('/api/journeys/stations', (req, res) => {
 	const limit = parseInt(req.query.limit) || 50
 	let page = parseInt(req.query.page) || 1
 
-	journeyModel.countDocuments({})
-		.then((totalDocuments) => {
+	journeyModel.aggregate([
+		{
+			$group: {
+				_id: null,
+				stations: {
+					$addToSet: {
+						$concatArrays: [
+							['$Departure station name'],
+							['$Return station name']
+						]
+					}
+				}
+			}
+		},
+		{
+			$project: {
+				_id: 0,
+				stations: { $reduce: { input: '$stations', initialValue: [], in: { $setUnion: ['$$value', '$$this'] } } }
+			}
+		}
+	])
+		.then((result) => {
+			const allJourneysStations = result[0].stations
+
+			const totalDocuments = allJourneysStations.length
 			const totalPages = Math.ceil(totalDocuments / limit)
 
 			page = Math.min(page, totalPages)
 
-			journeyModel.find({})
-				.skip((page - 1) * limit)
-				.limit(limit)
-				.then((items) => {
-					const allJourneysStations = [...new Set([
-						...items.map((journey) => journey['Departure station name']),
-						...items.map((journey) => journey['Return station name'])
-					])]
-					res.json({ allJourneysStations,totalPages, currentPage: page })
-				})
-				.catch((err) => {
-					console.log(err)
-					res.status(500).json({ error: 'An error occurred while fetching journeys' })
-				})
+			const startIndex = (page - 1) * limit
+			const endIndex = startIndex + limit
+
+			const paginatedStations = allJourneysStations.slice(startIndex, endIndex)
+
+			res.json({ paginatedStations, totalPages, currentPage: page })
 		})
 		.catch((err) => {
 			console.log(err)
-			res.status(500).json({ error: 'An error occurred while counting documents' })
+			res.status(500).json({ error: 'An error occurred while fetching journeys' })
 		})
 })
+
 
 app.get('/api/stations', (req, res) => {
 	const results = []

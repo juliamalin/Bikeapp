@@ -32,7 +32,9 @@ export const Stations = () => {
         dispatch(initializeJourneysStations(currentPage))
     }, [currentPage, dispatch])
 
-    let filteredStations = [...allJourneysStations]
+    let filteredStations = allJourneysStations.flat()
+    console.log(filteredStations)
+    console.log(countReturnStation)
 
     if (searchStation) {
         const lowercaseSearchStation = searchStation.toLowerCase()
@@ -59,9 +61,9 @@ export const Stations = () => {
             <h2>Asemat</h2>
             <input placeholder="Hae asema" onChange={ev => setStation(ev.target.value)}></input>
             <h4>Klikkamalla asemaa saat näkyville tarkemmat tiedot</h4>
-            {filteredStations.map((station) => (
+            {filteredStations.map((station, index) => (
                 <article
-                    key={station}
+                    key={index}
                     className="station-excerpt"
                     onClick={() => {
                         if (!open){

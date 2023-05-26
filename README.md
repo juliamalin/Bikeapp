@@ -33,3 +33,9 @@ C:\Program Files\MongoDB\Tools>mongoimport --uri "mongodb+srv://juliamalin:xxxxx
   //git käsittelee päätteet
 
   git config core.autocrlf true
+  gitissä master haarassa
+  
+
+
+//Overall, the code is a combination of JavaScript (for defining the Express route handler) and MongoDB aggregation framework syntax 
+//serveripuolella käytössä kyseinen framwork

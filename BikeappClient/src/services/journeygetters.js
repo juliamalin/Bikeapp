@@ -15,7 +15,7 @@ export const getAllJourneys = (page) => {
 const getJourneysStations = (page) => {
     const request = axios.get(`http://localhost:3001/api/journeys/stations?page=${page}`)
     return request.then((response) => ({
-        allJourneysStations: response.data.allJourneysStations,
+        allJourneysStations: response.data.paginatedStations,
         totalPages: response.data.totalPages,
         currentPage: response.data.currentPage
     }))

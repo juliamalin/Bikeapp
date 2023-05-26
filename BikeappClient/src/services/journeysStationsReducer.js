@@ -32,7 +32,7 @@ const journeysStationsSlice = createSlice({
 }
 )
 
-console.log(initialState.allJourneysStations)
+console.log(initialState.totalPages)
 export const { setJourneysStations, setCurrentPage, setLoading, setError } = journeysStationsSlice.actions
 
 export const initializeJourneysStations = (currentPage) => {
