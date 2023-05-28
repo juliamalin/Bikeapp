@@ -27,7 +27,7 @@ const getStationinfo = () => {
 }
 
 const getJourneyCountsDepartureStation = () => {
-    const request = axios.get('hapi/journeys/count/departurestation')
+    const request = axios.get('api/journeys/count/departurestation')
     return request.then((response) => response.data.counts)
 }
 

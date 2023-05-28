@@ -4,7 +4,7 @@ import journeyService from './journeygetters'
 const initialState = {
     allJourneysStations: [],
     totalPages: 0,
-    currentPage: 1,
+    currentPage: 0,
     loading: false,
     error: null,
 }
